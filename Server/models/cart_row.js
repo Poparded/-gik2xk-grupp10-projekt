@@ -15,21 +15,19 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
 
             }
+            ,
+            product_id: {
+                type: DataTypes.DOUBLE,
+                allowNull: false
+
+            }
         },
 
         { underscored: true }
 
     );
 
-    cart_row.associate = function (models) {
-        cart_row.belongsTo(models.Product, {
-            foreignKey: {
-                name: 'product_id',
-                allowNull: false
-            },
-            onDelete: "CASCADE"
-        });
-    };
+
 
     return cart_row;
 };

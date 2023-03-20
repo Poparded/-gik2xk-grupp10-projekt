@@ -47,15 +47,6 @@ module.exports = (sequelize, DataTypes) => {
 
         { underscored: true }
     );
-    Users.associate = function (models) {
 
-        Users.hasMany(models.cart, {
-            foreignKey: {
-                name: 'product_id',
-                allowNull: false
-            },
-            onDelete: "CASCADE"
-        });
-    };
     return Users;
 };

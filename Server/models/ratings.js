@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
+
             },
             title: {
                 type: DataTypes.STRING,
@@ -20,15 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         { underscored: true }
     );
 
-    Ratings.associate = function (models) {
-        Ratings.belongsTo(models.Product, {
-            foreignKey: {
-                name: 'product_id',
-                allowNull: false
-            },
-            onDelete: "CASCADE"
-        });
-    };
 
     return Ratings;
 };
