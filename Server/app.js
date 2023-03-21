@@ -9,6 +9,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/products", require("./routes/products_route"))
-app.use('/users', require('./routes/usersRoute'));
+app.use('/users', require('./routes/users_Route'));
 
 module.exports = app;

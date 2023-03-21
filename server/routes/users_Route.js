@@ -16,27 +16,39 @@ const constraints = {
   },
   username: {
     length: {
-      minimum: 3,
+      minimum: 6,
       maximum: 30,
       tooShort: '^Användarnamnet måste vara minst %{count} tecken långt.',
       tooLong: '^Användarnamnet får inte vara längre än %{count} tecken långt.'
     }
   },
-  imageUrl: {
-    url: {
-      message: '^Sökvägen är felaktig.'
-    }
-  }
-  , password: {
+  password: {
     length: {
       minimum: 6,
-      maxiumum: 30
+      maximum: 30,
+      tooShort: '^Lösenordet måste vara minst %{count} tecken långt.',
+      tooLong: '^Lösenordet får inte vara längre än %{count} tecken långt.'
+    }
+  },
+  first_name: {
+    length: {
+      minimum: 3,
+      maximum: 18,
+      tooShort: '^Förnamnet måste vara minst %{count} tecken långt.',
+      tooLong: '^Förnamnet får inte vara längre än %{count} tecken långt.'
+    }
+  },
+  last_name: {
+    length: {
+      minimum: 3,
+      maximum: 18,
+      tooShort: '^Efternamnet måste vara minst %{count} tecken långt.',
+      tooLong: '^Efternamnet får inte vara längre än %{count} tecken långt.'
     }
   }
 };
-
-router.get('/cart/', (req, res) => {
-  db.user.findAll().then((result) => {
+router.get('/', (req, res) => {
+  db.users.findAll().then((result) => {
     res.send(result);
   });
 });
@@ -51,13 +63,14 @@ router.post('/', (req, res) => {
       res.send(result);
     });
   }
+  res.send(req.body)
 });
 
 router.put('/', (req, res) => {
   const user = req.body;
   const invalidData = validate(user, constraints);
   const id = user.id;
-  if (invalidData || !id) {
+  /*if (invalidData || !id) {
     res.status(400).json(invalidData || 'Id är obligatoriskt.');
   } else {
     db.user
@@ -67,8 +80,15 @@ router.put('/', (req, res) => {
       .then((result) => {
         res.send('Inlägget har uppdaterats.');
       });
-  }
-});
+  }*/
+
+  console.log(invalidData);
+  console.log(id);
+  console.log(user);
+
+}
+
+);
 router.delete('/', (req, res) => {
   db.user
     .destroy({

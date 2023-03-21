@@ -1,0 +1,105 @@
+/* Define global styles */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Define styles for the header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+}
+
+.header__logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+}
+
+.header__nav a {
+  margin: 0 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Define styles for the main content */
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.product {
+  flex-basis: 33.33%;
+  padding: 20px;
+}
+
+.product__image {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.product__name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product__price {
+  font-size: 16px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.product__description {
+  font-size: 14px;
+  color: #666;
+}
+
+.product__button {
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+.product__button:hover {
+  background-color: #555;
+}
+
+/* Define styles for the footer */
+.footer {
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+}
+
+.footer__text {
+  font-size: 14px;
+}
+
+.footer__link {
+  color: #fff;
+  text-decoration: underline;
+}
