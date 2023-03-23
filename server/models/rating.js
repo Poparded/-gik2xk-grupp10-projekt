@@ -1,7 +1,7 @@
 // Ratings model
 module.exports = (sequelize, DataTypes) => {
-    const Ratings = sequelize.define(
-        "Ratings",
+    return sequelize.define(
+        "rating",
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -13,14 +13,18 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+
             rating: {
-                type: DataTypes.DOUBLE,
+                type: DataTypes.INTEGER,
                 allowNull: false,
+                validate: {
+                    len: [1, 10],
+                }
             },
         },
         { underscored: true }
     );
 
 
-    return Ratings;
 };
+

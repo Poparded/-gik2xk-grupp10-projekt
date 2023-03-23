@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
 
+      },
+      rating: {
+        type: DataTypes.DOUBLE
+
       }
     },
     { underscored: true }

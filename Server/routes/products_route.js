@@ -3,16 +3,7 @@ const router = require("express").Router();
 const db = require("../models");
 const validate = require("validate.js");
 
-const constraints_products = {
-  title: {
-    length: {
-      minimum: 2,
-      maximum: 100,
-      tooShort: "^Titeln måste vara minst %{count} tecken lång.",
-      tooLong: "^Titeln får inte vara längre än %{count} tecken lång.",
-    },
-  },
-};
+
 
 router.get("/", (req, res) => {
   productService.getAll().then((result) => {
@@ -21,6 +12,15 @@ router.get("/", (req, res) => {
     res.status(500).json(error);
   });
 });
+router.get("/:id", (req, res) => {
+  id = req.params.id
+
+  productService.getProductById(id).then((result) => {
+    res.status(result.status).json(result.data)
+  }).catch((error) => {
+    res.status(500).json(error)
+  })
+})
 // Product request to create a new post
 router.post('/', (req, res) => {
   const product = req.body; // Get post data from the request body
@@ -30,9 +30,26 @@ router.post('/', (req, res) => {
   });
 });
 
+router.post('/:id/addRating', (req, res) => {
+  const rating = req.body; // Get post data from the request body
+  const id = req.params.id
+  console.log(rating);
+  productService.addRating(id, rating).then((result) => { // Call postService.create method with post as parameter
+    res.status(result.status).json(result.data); // Send the response with the status and data received from postService.create
+  });
+});
 
 
+router.delete('/', (req, res) => {
+  const id = req.body.id; // Get the id from the request body
+  if (!id) {
+    console.log("You need a id!");
 
+  }
+  productService.destroy(id).then((result) => { // Call postService.destroy method with id as parameter
+    res.status(result.status).json(result.data); // Send the response with the status and data received from postService.destroy
+  });
+});
 
 
 
@@ -79,20 +96,11 @@ router.post("/:id/addRating", (req, res) => {
 });
 
 router.put("/", (req, res) => {
+  const id = req.body.id
   const produkt = req.body;
-  const invalidData = validate(produkt, constraints);
-  const id = produkt.id;
-  if (invalidData || !id) {
-    res.status(400).json(invalidData || "Id är obligatoriskt.");
-  } else {
-    db.produkt
-      .update(produkt, {
-        where: { id: produkt.id },
-      })
-      .then((result) => {
-        res.send("Inlägget har uppdaterats.");
-      });
-  }
+  productService.update(produkt, id).then((result) => {
+    res.status(result.status).json(result.data)
+  })
 });
 router.delete("/:id", (req, res) => {
   db.produkt

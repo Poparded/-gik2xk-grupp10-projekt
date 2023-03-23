@@ -1,11 +1,11 @@
-const db = require("../models")
+const db = require("../models");
 const {
     createResponseSuccess,
     createResponseError,
-    createResponseMessage
+    createResponseMessage,
 } = require("../helpers/responseHelper");
 const product = require("../models/product");
-const { validate } = require("validate.js");
+const { validate, async } = require("validate.js");
 const constraints_products = {
     title: {
         length: {
@@ -20,69 +20,93 @@ const constraints_products = {
 async function getAll() {
     try {
         const AllProducts = await db.product.findAll();
-        return createResponseSuccess(AllProducts)
+        return createResponseSuccess(AllProducts);
+    } catch (error) {
+        return createResponseError(error, error.message);
     }
-
-    catch (error) {
-        return createResponseError(error, error.message)
-
-    }
-
 }
 
 async function addProduct(product) {
-    const invalidData = validate(product, constraints_products)
+    const invalidData = validate(product, constraints_products);
     if (invalidData) {
-        return createResponseError(422, invalidData)
-
+        return createResponseError(422, invalidData);
     }
     try {
-        const newPost = await db.product.create(product)
+        const newPost = await db.product.create(product);
 
-        return createResponseSuccess(newPost)
-    }
-    catch (error) {
+        return createResponseSuccess(newPost);
+    } catch (error) {
         return createResponseError(error.status, error.message);
     }
-
-
 }
-
-
-async function addRating(id, comment) {
+async function getProductById(id) {
     if (!id) {
-        return createResponseError(422, 'Id is required');
+        return createResponseError(422, "Id is required");
     }
     try {
-        comment.postId = id;
-        await db.comment.create(comment);
-
-        const postWithNewComment = await db.post.findOne({
-            where: { id },
-            include: [
-                db.user,
-                db.tag,
-                {
-                    model: db.comment,
-                    include: [db.user]
-                }
-            ]
+        const productId = id;
+        const productWithRating = await db.product.findOne({
+            where: { id: productId }
         });
+        console.log(productWithRating);
 
-        return createResponseSuccess(_formatPost(postWithNewComment));
+        // Add the newly created rating to the productWithRating object
+        return createResponseSuccess(productWithRating);
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
+}
+async function addRating(id, rating) {
+    if (!id) {
+        return createResponseError(422, "Id is required");
+    }
+    try {
+        const productId = id;
+        await db.rating.create(rating);
+        console.log(rating);
+        const productWithRating = await db.product.findOne({
+            where: { id: productId }
+        });
+        console.log(productWithRating);
+
+        // Add the newly created rating to the productWithRating object
+        return createResponseSuccess(_formatProduct(productWithRating));
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
+}
+
+async function destroy(id) {
+    if (!id) return createResponseError(422, "Id is required");
+
+    try {
+        await db.product.destroy({ where: { id } });
+        return createResponseMessage(200, "Product deleted");
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
+}
+async function update(product, id) {
+    const invalidData = validate(product, constraints_products)
+    if (!id) {
+
+        return createResponseError(422, "Id is required")
+    }
+    if (invalidData) {
+        return createResponseError(422, invalidData)
+    }
+    try {
+        const existingProduct = await db.product.findOne({ where: { id } })
+        if (!existingProduct) {
+            return createResponseError(404, "No product found to update")
+        }
+        await db.product.update(product, { where: { id } })
+        return createResponseMessage(200, "Product updated")
     }
     catch (error) {
         return createResponseError(error.status, error.message)
     }
 }
-function update() {
-
-}
-
-function destroy() {
-
-}
-
 
 
 function _formatProduct(product) {
@@ -94,10 +118,24 @@ function _formatProduct(product) {
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
         price: product.price,
-        imageUrl: product.imageUrl
+        imageUrl: product.imageUrl,
+    };
 
+    if (product.ratings) {
+        cleanProduct.ratings = [];
+
+        product.ratings.map((rating) => {
+            return (cleanProduct.ratings = [
+                {
+                    id: rating.id,
+                    title: rating.title,
+                    rating: rating.rating,
+                },
+                ...cleanProduct.ratings,
+            ]);
+        });
     }
-    return cleanProduct
-}
 
-module.exports = { destroy, getAll, getAll, update, addRating, addProduct }; 
+    return cleanProduct;
+}
+module.exports = { destroy, getAll, getAll, update, addRating, addProduct, getProductById };
