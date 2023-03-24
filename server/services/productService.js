@@ -6,6 +6,7 @@ const {
 } = require("../helpers/responseHelper");
 const product = require("../models/product");
 const { validate, async } = require("validate.js");
+const rating = require("../models/rating");
 const constraints_products = {
     title: {
         length: {
@@ -68,7 +69,8 @@ async function addRating(id, rating) {
             where: { id: productId }
         });
         console.log(productWithRating);
-
+        console.log(rating.rating);
+        productWithRating.rating = rating.rating
         // Add the newly created rating to the productWithRating object
         return createResponseSuccess(_formatProduct(productWithRating));
     } catch (error) {
@@ -119,22 +121,23 @@ function _formatProduct(product) {
         updatedAt: product.updatedAt,
         price: product.price,
         imageUrl: product.imageUrl,
+        rating: product.rating
     };
 
-    if (product.ratings) {
-        cleanProduct.ratings = [];
-
-        product.ratings.map((rating) => {
-            return (cleanProduct.ratings = [
-                {
-                    id: rating.id,
-                    title: rating.title,
-                    rating: rating.rating,
-                },
-                ...cleanProduct.ratings,
-            ]);
-        });
-    }
+    /* if (product.rating) {
+         cleanProduct.rating = [];
+ 
+         product.rating.map((rating) => {
+             return (cleanProduct.rating = [
+                 {
+                     id: rating.id,
+                     title: rating.title,
+                     rating: rating.rating,
+                 },
+                 ...cleanProduct.rating,
+             ]);
+         });
+     }*/
 
     return cleanProduct;
 }
