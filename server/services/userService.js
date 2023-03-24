@@ -46,4 +46,4 @@ async function addUsers(user) {
         return createResponseError(error, error.message);
     }
 }
-module.exports = { getAllusers };
+module.exports = { getAllusers, addUsers };

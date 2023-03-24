@@ -28,10 +28,10 @@ async function getAll() {
 async function create(cart) {
 
     try {
-        const newPost = await db.post.create(post);
+        const newCart = await db.post.create(post);
         // Post tags is an array of names
         // Add any tags to the post
-        await _addTagToPost(newPost, post.tags);
+        await _addProductsCart(newCart, cart.product);
 
         return createResponseSuccess(newPost);
     } catch (error) {
