@@ -6,7 +6,6 @@ const {
 } = require("../helpers/responseHelper");
 const product = require("../models/product");
 const { validate, async } = require("validate.js");
-const rating = require("../models/rating");
 const constraints_products = {
     title: {
         length: {
@@ -24,6 +23,19 @@ async function getAll() {
         return createResponseSuccess(AllProducts);
     } catch (error) {
         return createResponseError(error, error.message);
+    }
+}
+async function create(cart) {
+
+    try {
+        const newPost = await db.post.create(post);
+        // Post tags is an array of names
+        // Add any tags to the post
+        await _addTagToPost(newPost, post.tags);
+
+        return createResponseSuccess(newPost);
+    } catch (error) {
+        return createResponseError(error.status, error.message);
     }
 }
 
@@ -66,10 +78,13 @@ async function addRating(id, rating) {
         await db.rating.create(rating);
         console.log(rating);
         const productWithRating = await db.product.findOne({
-            where: { id: productId }
+            where: { id: productId },
+            include: [{
+                model: db.rating,
+                as: 'ratings' // the alias for the relationship in your model definition
+            }]
         });
         console.log(productWithRating);
-        console.log(rating.rating);
         productWithRating.rating = rating.rating
         // Add the newly created rating to the productWithRating object
         return createResponseSuccess(_formatProduct(productWithRating));
@@ -77,6 +92,7 @@ async function addRating(id, rating) {
         return createResponseError(error.status, error.message);
     }
 }
+
 
 async function destroy(id) {
     if (!id) return createResponseError(422, "Id is required");
@@ -88,6 +104,7 @@ async function destroy(id) {
         return createResponseError(error.status, error.message);
     }
 }
+
 async function update(product, id) {
     const invalidData = validate(product, constraints_products)
     if (!id) {
@@ -124,20 +141,20 @@ function _formatProduct(product) {
         rating: product.rating
     };
 
-    /* if (product.rating) {
-         cleanProduct.rating = [];
- 
-         product.rating.map((rating) => {
-             return (cleanProduct.rating = [
-                 {
-                     id: rating.id,
-                     title: rating.title,
-                     rating: rating.rating,
-                 },
-                 ...cleanProduct.rating,
-             ]);
-         });
-     }*/
+    if (product.ratings) {
+        cleanProduct.ratings = [];
+
+        product.ratings.map((rating) => {
+            return (cleanProduct.ratings = [
+                {
+                    id: rating.id,
+                    title: rating.title,
+                    rating: rating.rating,
+                },
+                ...cleanProduct.ratings,
+            ]);
+        });
+    }
 
     return cleanProduct;
 }

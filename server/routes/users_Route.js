@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const db = require('../models');
 const validate = require('validate.js');
+const productService = require("../services/userService");
 
 const constraints = {
   email: {
@@ -48,11 +49,12 @@ const constraints = {
   }
 };
 router.get('/', (req, res) => {
-  db.users.findAll().then((result) => {
-    res.send(result);
+  productService.getAllusers().then((result) => {
+    res.status(result.status).json(result.data);
+  }).catch((error) => {
+    res.status(error.status).json({ error: error.message });
   });
 });
-
 router.post('/', (req, res) => {
   const user = req.body;
   const invalidData = validate(user, constraints);
@@ -63,7 +65,6 @@ router.post('/', (req, res) => {
       res.send(result);
     });
   }
-  res.send(req.body)
 });
 
 router.put('/', (req, res) => {

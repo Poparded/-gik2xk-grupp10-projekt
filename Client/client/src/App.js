@@ -2,9 +2,9 @@ import './App.css';
 import { Typography, Box, AppBar, Toolbar } from '@mui/material';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './views/Home';
-import Products from './views/Posts';
-import ProductsEdit from './views/PostEdit';
-import ProductsDetail from './views/PostDetail';
+import Products from './views/Products';
+import ProductsEdit from './views/ProductsEdit';
+import ProductsDetail from './views/ProductDetail';
 
 
 function App() {
@@ -19,10 +19,13 @@ function App() {
               <Link to="/">Hem</Link>
             </Typography>
             <Typography variant="h6" component="div">
-              <Link to="/posts">Alla Produkten</Link>
+              <Link to="/Products">Alla Produkten</Link>
             </Typography>
             <Typography variant="h6" component="div">
-              <Link to="/postEdit">Lägg till i varukorgen</Link>
+              <Link to="/ProductEdit">Lägg till i varukorgen</Link>
+            </Typography>
+            <Typography variant="h6" component="div">
+              <Link to="/ProductsDetail">Visa produkten</Link>
             </Typography>
           </Toolbar>
         </AppBar>
