@@ -38,6 +38,8 @@ router.post('/:id/addRating', (req, res) => {
     res.status(result.status).json(result.data); // Send the response with the status and data received from postService.create
   });
 });
+
+
 router.post('/:id/addCart', (req, res) => {
   const product = req.body; // Get post data from the request body
   const id = req.params.id

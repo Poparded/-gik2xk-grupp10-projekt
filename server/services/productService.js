@@ -69,7 +69,7 @@ async function getProductById(id) {
         return createResponseError(error.status, error.message);
     }
 }
-async function addRating(id, rating) {
+/*async function addRating(id, rating) {
     if (!id) {
         return createResponseError(422, "Id is required");
     }
@@ -91,7 +91,26 @@ async function addRating(id, rating) {
     } catch (error) {
         return createResponseError(error.status, error.message);
     }
+}*/
+
+async function addRating(id, review) {
+    if (!id) {
+        return createResponseError(422, "Id is obligatory");
+    }
+    try {
+        review.productId = id;
+        await db.rating.create(review);
+
+        const newReview = await db.product.findOne({
+            where: { id }
+        });
+
+        return createResponseSuccess(newReview);
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+    }
 }
+
 
 
 async function destroy(id) {
